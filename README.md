@@ -12,6 +12,8 @@ A working test suite is included to debug the input/output. Run index.html in yo
 * jquery.js (http://jquery.com/download/)
 
 ## Usage
+```
 var bitstamp = new Bitstamp('clientid', 'apikey', 'apisecret');
 bitstamp.submitRequest(bitstamp.methods.ticker, debugResponse ); // lazy function pointer when extra no params are required
 bitstamp.submitRequest(bitstamp.methods.cancelorder, function(data){console.log(data);}, {id: 1} ); // where the order id = 1
+```
