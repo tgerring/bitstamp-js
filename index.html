@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>bitstamp-js</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <script src="jssha256.js" type="text/javascript"></script>
+    <script src="jquery-2.0.3.min.js" type="text/javascript"></script>
+    <script src="bitstamp-js.js" type="text/javascript"></script>
+    <script src="tests.js" type="text/javascript"></script>
+    </head>
+    <body>
+        <div>
+            <button id="ticker" type="button">Ticker</button>
+            <button id="orderbook" type="button">Order Book</button>
+            <button id="transactions" type="button">Transactions</button>
+            <button id="eurusd" type="button">EUR/USD Conversion Rate</button>
+            <br />
+            <button id="balance" type="button">Account Balance</button>
+            <button id="usertransactions" type="button">User Transactions</button>
+            <button id="openorders" type="button">Open Orders</button>
+            <button id="cancelorder" type="button">Cancel Order</button>
+            <button id="orderbuy" type="button">Buy Limit Order</button>
+            <button id="ordersell" type="button">Sell Limit Order</button>
+            <br />
+            <button id="withdrawalrequests" type="button">Withdrawal Requests</button>
+            <button id="btcwithdrawal" type="button">Bitcoin Withdrawal</button>
+            <button id="btcdepositaddress" type="button">Bitcoin Deposit Address</button>
+            <button id="unconfirmedbtc" type="button">Unconfirmed Bitcoin Deposits</button>
+            <button id="ripplewithdrawal" type="button">Ripple Withdrawal</button>
+            <button id="rippledepositaddress" type="button">Ripple Deposit Address</button>
+            <br />Sending the following parameters:<textarea id="params" cols="80" rows="4" disabled="disabled"></textarea>
+            <br />Received this response:<textarea id="response" cols="80" rows="4" disabled="disabled"></textarea>
+        </div>
+        <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('#ticker').click( function(){getTicker();} );
+            $('#orderbook').click( function(){getOrderBook(1);} );
+            $('#transactions').click( function(){getTransactions('hour');} );
+            $('#eurusd').click( function(){getEurUsdRate();} );
+
+            $('#balance').click( function(){getBalance();} );
+            $('#usertransactions').click( function(){getUserTransactions();} );
+            $('#openorders').click( function(){getOpenOrders();} );
+            $('#cancelorder').click( function(){cancelOrder(1);} );
+            $('#orderbuy').click( function(){orderBuy(1, 1);} );
+            $('#ordersell').click( function(){orderSell(1, 1);} );
+
+            $('#withdrawalrequests').click( function(){withdrawalRequest();} );
+            $('#btcwithdrawal').click( function(){bitcoinWithdrawal(1, '1address');} );
+            $('#btcdepositaddress').click( function(){getBitcoinDepositAddress();} );
+            $('#unconfirmedbtc').click( function(){listUnconfirmedBitcoinTransactions();} );
+            $('#ripplewithdrawal').click( function(){rippleWithdrawal(1, '1address', 'USD');} );
+            $('#rippledepositaddress').click( function(){getRippleDepositAddress();} );
+
+        });
+        </script>
+    </body>
+</html>
