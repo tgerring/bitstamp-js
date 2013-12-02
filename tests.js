@@ -4,27 +4,15 @@ function displayInputParams(params) {
   $('#params').val(JSON.stringify(params));
 }
 
-function debugResponse(data, status) {
-  console.log('Response returned');
-  console.log(data);
-
+function debugResponse(data) {
   if ('error' in data) {
-    var errorstring = '';
-    if (typeof data.error === 'string') {
-      errorstring = data.error;
-    } else {
-      for (var key in data.error) {
-        errorstring += data.error[key] + '\n';
-      }
-    }
-    $('#response').val('Bitstamp returned error: ' + errorstring);
-    return;
+    $('#response').val(data.error);
+  } else if ('data' in data) {
+    $('#response').val(JSON.stringify(data.data));
+  } else {
+    $('#response').val('Unknown error');
   }
-  $('#response').val(JSON.stringify(data));
 }
-
-
-
 
 function getTicker() {
   $('#response').val('');

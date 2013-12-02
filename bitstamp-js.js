@@ -10,7 +10,6 @@ bitstamp.submitRequest(bitstamp.methods.ticker, function(data){console.log(data)
 bitstamp.submitRequest(bitstamp.methods.cancelorder, function(data){console.log(data);}, {id: 1} );
 
 */
-
 Bitstamp = function(client_id, api_key, api_secret) {
   this.auth = {client_id: client_id, api_key: api_key, api_secret: api_secret};
   this.host = 'https://www.bitstamp.net';
@@ -113,7 +112,7 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
   }
 
   for (var param in params) {
-    if (typeof params[param] == 'undefined') {
+    if (typeof params[param] === 'undefined') {
       delete params[param];
     } else {
       params[param] = params[param].toString();
@@ -122,15 +121,44 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
 
   console.log('Submitting request');
 
+  var that = this;
   $.ajax({
     type: bitstampmethod.method,
     url: bitstamp.host + bitstampmethod.endpoint,
     data: params,
-    success: callback,
+    success: function(data, textStatus, jqXHR){that.parseResponse(data, callback);},
+    error: function(jqXHR, textStatus, errorThrown){that.handleError(textStatus, errorThrown, callback);},
+    timeout: 30000,
     dataType: 'json'
   });
 
   return params;
 }
 
+Bitstamp.prototype.handleError = function(textStatus, errorThrown, callback) {
+    var data = {};
+    data.error = 'Error with request: ' + errorThrown;
+    this.parseResponse(data, callback);
+}
 
+Bitstamp.prototype.parseResponse = function(data, callback) {
+  console.log('Response returned');
+  console.log(data);
+
+  var returnval = {};
+
+  if ('error' in data) {
+    var errorstring = '';
+    if (typeof data.error === 'string') {
+      errorstring = data.error;
+    } else {
+      for (var key in data.error) {
+        errorstring += data.error[key] + '\n';
+      }
+    }
+    returnval.error = errorstring;
+  } else {
+    returnval.data = data;
+  }
+  callback(returnval);
+}
