@@ -124,7 +124,7 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
   var that = this;
   $.ajax({
     type: bitstampmethod.method,
-    url: bitstamp.host + bitstampmethod.endpoint,
+    url: this.host + bitstampmethod.endpoint,
     data: params,
     success: function(data, textStatus, jqXHR){that.parseResponse(data, callback);},
     error: function(jqXHR, textStatus, errorThrown){that.handleError(textStatus, errorThrown, callback);},
