@@ -40,7 +40,7 @@ Bitstamp = function(client_id, api_key, api_secret) {
     usertransactions: {
         endpoint: '/api/user_transactions/',
         method: 'POST',
-        params: ['key', 'signature', 'nonce', 'offest', 'limit', 'sort']
+        params: ['key', 'signature', 'nonce', 'offset', 'limit', 'sort']
     },
     openorders: {
         endpoint: '/api/open_orders/',
@@ -99,7 +99,7 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
   if (!params)
     params = {};
 
-  if ($.inArray('signature', bitstampmethod.params) > -1 && !('signature' in bitstampmethod.params) ) {
+  if ($.inArray('signature', bitstampmethod.params) > -1 && !('signature' in params) ) {
     console.log('Signature required but not in supplied params');
 
     unix_timestamp = Math.round(+new Date() / 1000);
@@ -147,7 +147,9 @@ Bitstamp.prototype.parseResponse = function(data, callback) {
 
   var returnval = {};
 
-  if ('error' in data) {
+  if (typeof response === 'string') {
+    returnval.data = response;
+  } else if ('error' in data) {
     var errorstring = '';
     if (typeof data.error === 'string') {
       errorstring = data.error;
