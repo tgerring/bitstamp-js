@@ -102,7 +102,7 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
   if ($.inArray('signature', bitstampmethod.params) > -1 && !('signature' in params) ) {
     console.log('Signature required but not in supplied params');
 
-    unix_timestamp = Math.round(+new Date() / 1000);
+    unix_timestamp = Math.round(+new Date());
     message = unix_timestamp.toString() + this.auth.client_id + this.auth.api_key;
     signature = HMAC_SHA256_MAC(this.auth.api_secret, message).toUpperCase();
 
