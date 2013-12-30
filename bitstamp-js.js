@@ -130,7 +130,7 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
   console.log('Submitting request');
 
   var that = this;
-  $.ajax({
+  this.requestFunction({
     type: bitstampmethod.method,
     url: this.host + bitstampmethod.endpoint,
     data: params,
@@ -141,6 +141,13 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
   });
 
   return params;
+}
+
+Bitstamp.prototype.requestFunction = function(xhrParams) {
+  console.log('requestFunction with params:');
+  console.log(xhrParams);
+  
+  $.ajax(xhrParams);
 }
 
 Bitstamp.prototype.handleError = function(textStatus, errorThrown, callback) {
