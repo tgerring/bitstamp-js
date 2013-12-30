@@ -1,15 +1,19 @@
 /*
-
 Depends:
-* jssha256.js
+* hmac-sha256.js (Google JS Crypto library)
 * jquery.js
 
 Usage:
+// Instantiate
 var bitstamp = new Bitstamp('clientid', 'apikey', 'apisecret');
+// Call with no option parameters
 bitstamp.submitRequest(bitstamp.methods.ticker, function(data){console.log(data);} );
-bitstamp.submitRequest(bitstamp.methods.cancelorder, function(data){console.log(data);}, {id: 1} );
-
+// Call with extra parameters
+bitstamp.submitRequest(bitstamp.methods.cancelorder, {id: 1}, function(data){console.log(data);} );
+// Override REST call
+bitstamp.requestFunction = function(xhrParams){ $.ajax(xhrParams) }
 */
+
 Bitstamp = function(client_id, api_key, api_secret) {
   this.auth = {client_id: client_id, api_key: api_key, api_secret: api_secret};
   this.host = 'https://www.bitstamp.net';
@@ -102,8 +106,8 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
   if ($.inArray('signature', bitstampmethod.params) > -1 && !('signature' in params) ) {
     console.log('Signature required but not in supplied params');
 
-    unix_timestamp = Math.round(+new Date());
-    message = unix_timestamp.toString() + this.auth.client_id + this.auth.api_key;
+    unix_timestamp_ms = Math.round(+new Date());
+    message = unix_timestamp_ms.toString() + this.auth.client_id + this.auth.api_key;
 
     var hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, this.auth.api_secret);
     hmac.update(message);
@@ -112,7 +116,7 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
     
     params.key = this.auth.api_key;
     params.signature = signature;
-    params.nonce = unix_timestamp;
+    params.nonce = unix_timestamp_ms;
   }
 
   for (var param in params) {
@@ -140,31 +144,34 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, callback, params) {
 }
 
 Bitstamp.prototype.handleError = function(textStatus, errorThrown, callback) {
-    var data = {};
-    data.error = 'Error with request: ' + errorThrown;
-    this.parseResponse(data, callback);
+  console.log('Error returned');
+  console.log(errorThrown);
+
+  var data = {};
+  data.error = 'Error with request: ' + errorThrown;
+  this.parseResponse(data, callback);
 }
 
-Bitstamp.prototype.parseResponse = function(data, callback) {
+Bitstamp.prototype.parseResponse = function(response, callback) {
   console.log('Response returned');
-  console.log(data);
+  console.log(response);
 
   var returnval = {};
 
-  if (typeof response === 'string') {
-    returnval.data = response;
-  } else if ('error' in data) {
+  if (typeof response === 'object' && 'error' in response) {
+    console.log('Error condition');
     var errorstring = '';
-    if (typeof data.error === 'string') {
-      errorstring = data.error;
+    if (typeof response.error === 'string') {
+      errorstring = response.error;
     } else {
-      for (var key in data.error) {
-        errorstring += data.error[key] + '\n';
+      for (var key in response.error) {
+        errorstring += response.error[key] + "\n";
       }
     }
     returnval.error = errorstring;
   } else {
-    returnval.data = data;
+    returnval.data = response;
   }
+
   callback(returnval);
 }

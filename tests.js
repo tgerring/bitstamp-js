@@ -4,11 +4,11 @@ function displayInputParams(params) {
   $('#params').val(JSON.stringify(params));
 }
 
-function debugResponse(data) {
-  if ('error' in data) {
-    $('#response').val(data.error);
-  } else if ('data' in data) {
-    $('#response').val(JSON.stringify(data.data));
+function debugResponse(response) {
+  if ('error' in response) {
+    $('#response').val(response.error);
+  } else if ('data' in response) {
+    $('#response').val(JSON.stringify(response.data));
   } else {
     $('#response').val('Unknown error');
   }
