@@ -68,9 +68,9 @@ function orderBuy(currency_pair, amount, price) {
   displayInputParams(params);
 }
 
-function orderSell(amount, price) {
+function orderSell(currency_pair, amount, price) {
   $('#response').val('');
-  params = bitstamp.submitRequest(bitstamp.methods.ordersell, debugResponse, {amount:amount, price: price});
+  params = bitstamp.submitRequest(bitstamp.methods.ordersell, {currency_pair, amount:amount, price: price});
   displayInputParams(params);
 }
 
