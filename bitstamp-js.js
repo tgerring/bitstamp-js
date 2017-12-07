@@ -57,12 +57,12 @@ Bitstamp = function(client_id, api_key, api_secret) {
         params: ['key', 'signature', 'nonce', 'id']
     },
     orderbuy: {
-        endpoint: '/api/buy/',
+        endpoint: '/api/v2/buy/',
         method: 'POST',
         params: ['key', 'signature', 'nonce', 'price', 'amount']
     },
     ordersell: {
-        endpoint: '/api/sell/',
+        endpoint: '/api/v2/sell/',
         method: 'POST',
         params: ['key', 'signature', 'nonce', 'price', 'amount']
     },
@@ -121,6 +121,7 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, params, callback) {
     params.nonce = unix_timestamp_ms;
   }
 
+  console.log(params);
   for (var param in params) {
     if (typeof params[param] === 'undefined') {
       delete params[param];
@@ -129,12 +130,20 @@ Bitstamp.prototype.submitRequest = function(bitstampmethod, params, callback) {
     }
   }
 
+  var currency_pair = '';
+  if(params.currency_pair != undefined){
+    alert('fsdf');
+    currency_pair = params.currency_pair + '/';
+    delete params.currency_pair;
+  }
+
   console.log('Submitting request');
+  
 
   var that = this;
   this.requestFunction({
     type: bitstampmethod.method,
-    url: this.host + bitstampmethod.endpoint,
+    url: this.host + bitstampmethod.endpoint + currency_pair,
     data: params,
     success: function(data, textStatus, jqXHR){that.parseResponse(data, callback);},
     error: function(jqXHR, textStatus, errorThrown){that.handleError(textStatus, errorThrown, callback);},
